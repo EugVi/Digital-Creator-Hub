@@ -1,4 +1,6 @@
 import { generatedContent, type GeneratedContent, type InsertGeneratedContent } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   createGeneratedContent(content: InsertGeneratedContent): Promise<GeneratedContent>;
@@ -6,38 +8,33 @@ export interface IStorage {
   getGeneratedContentByType(sessionId: string, type: string): Promise<GeneratedContent[]>;
 }
 
-export class MemStorage implements IStorage {
-  private contents: Map<number, GeneratedContent>;
-  private currentId: number;
-
-  constructor() {
-    this.contents = new Map();
-    this.currentId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   async createGeneratedContent(insertContent: InsertGeneratedContent): Promise<GeneratedContent> {
-    const id = this.currentId++;
-    const content: GeneratedContent = {
-      ...insertContent,
-      id,
-      language: insertContent.language || 'en',
-      createdAt: new Date(),
-    };
-    this.contents.set(id, content);
+    const [content] = await db
+      .insert(generatedContent)
+      .values(insertContent)
+      .returning();
     return content;
   }
 
   async getGeneratedContentBySession(sessionId: string): Promise<GeneratedContent[]> {
-    return Array.from(this.contents.values()).filter(
-      (content) => content.sessionId === sessionId,
-    );
+    return await db
+      .select()
+      .from(generatedContent)
+      .where(eq(generatedContent.sessionId, sessionId))
+      .orderBy(generatedContent.createdAt);
   }
 
   async getGeneratedContentByType(sessionId: string, type: string): Promise<GeneratedContent[]> {
-    return Array.from(this.contents.values()).filter(
-      (content) => content.sessionId === sessionId && content.type === type,
-    );
+    return await db
+      .select()
+      .from(generatedContent)
+      .where(and(
+        eq(generatedContent.sessionId, sessionId),
+        eq(generatedContent.type, type)
+      ))
+      .orderBy(generatedContent.createdAt);
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

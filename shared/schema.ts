@@ -7,6 +7,7 @@ export const generatedContent = pgTable("generated_content", {
   sessionId: text("session_id").notNull(),
   type: text("type").notNull(), // 'idea', 'validation', 'promotion'
   niche: text("niche").notNull(),
+  country: text("country").notNull(),
   language: text("language").notNull().default('en'),
   content: jsonb("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -22,6 +22,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         type: 'idea',
         niche,
+        country,
         language,
         content: { ideas }
       });
@@ -52,6 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         type: 'validation',
         niche,
+        country,
         language,
         content: { idea, validation }
       });
@@ -82,6 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         type: 'promotion',
         niche,
+        country,
         language,
         content: { idea, promotionKit }
       });
