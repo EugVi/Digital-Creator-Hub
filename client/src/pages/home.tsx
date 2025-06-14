@@ -7,6 +7,7 @@ import { ProductIdea, IdeaValidation, PromotionKit } from "@shared/schema";
 import { GenerateIdeasResponse, ValidateIdeaResponse, GeneratePromotionKitResponse } from "@/types/api";
 import LanguageSwitcher from "@/components/language-switcher";
 import NicheInput from "@/components/niche-input";
+import CountrySelector from "@/components/country-selector";
 import ActionCards from "@/components/action-cards";
 import ResultsDisplay from "@/components/results-display";
 import { Rocket } from "lucide-react";
@@ -15,6 +16,7 @@ export default function Home() {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const [niche, setNiche] = useState("");
+  const [country, setCountry] = useState("");
   const [currentIdea, setCurrentIdea] = useState("");
   const [results, setResults] = useState<{
     ideas?: ProductIdea[];
@@ -28,6 +30,7 @@ export default function Home() {
       const response = await apiRequest("POST", "/api/generate-ideas", {
         niche,
         language,
+        country,
       });
       return response.json() as Promise<GenerateIdeasResponse>;
     },
@@ -65,6 +68,7 @@ export default function Home() {
         idea: currentIdea,
         niche,
         language,
+        country,
       });
       return response.json() as Promise<ValidateIdeaResponse>;
     },
@@ -99,6 +103,7 @@ export default function Home() {
         idea: currentIdea,
         niche,
         language,
+        country,
       });
       return response.json() as Promise<GeneratePromotionKitResponse>;
     },
@@ -135,6 +140,14 @@ export default function Home() {
       });
       return;
     }
+    if (!country.trim()) {
+      toast({
+        title: "Error",
+        description: t('error.countryRequired'),
+        variant: "destructive",
+      });
+      return;
+    }
     generateIdeasMutation.mutate();
   };
 
@@ -143,6 +156,14 @@ export default function Home() {
       toast({
         title: "Error",
         description: t('error.nicheRequired'),
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!country.trim()) {
+      toast({
+        title: "Error",
+        description: t('error.countryRequired'),
         variant: "destructive",
       });
       return;

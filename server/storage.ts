@@ -20,6 +20,7 @@ export class MemStorage implements IStorage {
     const content: GeneratedContent = {
       ...insertContent,
       id,
+      language: insertContent.language || 'en',
       createdAt: new Date(),
     };
     this.contents.set(id, content);
