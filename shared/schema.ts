@@ -24,18 +24,21 @@ export type GeneratedContent = typeof generatedContent.$inferSelect;
 export const generateIdeaRequestSchema = z.object({
   niche: z.string().min(1, "Niche is required"),
   language: z.enum(['en', 'pt']).default('en'),
+  country: z.string().min(1, "Country is required"),
 });
 
 export const validateIdeaRequestSchema = z.object({
   idea: z.string().min(1, "Idea is required"),
   niche: z.string().min(1, "Niche is required"),
   language: z.enum(['en', 'pt']).default('en'),
+  country: z.string().min(1, "Country is required"),
 });
 
 export const generatePromotionKitRequestSchema = z.object({
   idea: z.string().min(1, "Idea is required"),
   niche: z.string().min(1, "Niche is required"),
   language: z.enum(['en', 'pt']).default('en'),
+  country: z.string().min(1, "Country is required"),
 });
 
 export type GenerateIdeaRequest = z.infer<typeof generateIdeaRequestSchema>;

@@ -6,17 +6,17 @@ import {
   validateIdeaRequestSchema, 
   generatePromotionKitRequestSchema 
 } from "@shared/schema";
-import { generateProductIdeas, validateIdea, generatePromotionKit } from "./services/openai";
+import { generateProductIdeas, validateIdea, generatePromotionKit } from "./services/gemini";
 import { nanoid } from "nanoid";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Generate product ideas
   app.post("/api/generate-ideas", async (req, res) => {
     try {
-      const { niche, language } = generateIdeaRequestSchema.parse(req.body);
-      const sessionId = req.sessionID || nanoid();
+      const { niche, language, country } = generateIdeaRequestSchema.parse(req.body);
+      const sessionId = nanoid();
       
-      const ideas = await generateProductIdeas(niche, language);
+      const ideas = await generateProductIdeas(niche, country, language);
       
       const content = await storage.createGeneratedContent({
         sessionId,
@@ -43,10 +43,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Validate idea
   app.post("/api/validate-idea", async (req, res) => {
     try {
-      const { idea, niche, language } = validateIdeaRequestSchema.parse(req.body);
-      const sessionId = req.sessionID || nanoid();
+      const { idea, niche, language, country } = validateIdeaRequestSchema.parse(req.body);
+      const sessionId = nanoid();
       
-      const validation = await validateIdea(idea, niche, language);
+      const validation = await validateIdea(idea, niche, country, language);
       
       const content = await storage.createGeneratedContent({
         sessionId,
@@ -73,10 +73,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate promotion kit
   app.post("/api/generate-promotion-kit", async (req, res) => {
     try {
-      const { idea, niche, language } = generatePromotionKitRequestSchema.parse(req.body);
-      const sessionId = req.sessionID || nanoid();
+      const { idea, niche, language, country } = generatePromotionKitRequestSchema.parse(req.body);
+      const sessionId = nanoid();
       
-      const promotionKit = await generatePromotionKit(idea, niche, language);
+      const promotionKit = await generatePromotionKit(idea, niche, country, language);
       
       const content = await storage.createGeneratedContent({
         sessionId,
