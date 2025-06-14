@@ -188,6 +188,14 @@ export default function Home() {
       });
       return;
     }
+    if (!country.trim()) {
+      toast({
+        title: "Error",
+        description: t('error.countryRequired'),
+        variant: "destructive",
+      });
+      return;
+    }
     if (!currentIdea.trim()) {
       toast({
         title: "Error",
@@ -201,6 +209,7 @@ export default function Home() {
 
   const handleClearNiche = () => {
     setNiche("");
+    setCountry("");
     setCurrentIdea("");
     setResults({});
   };
@@ -240,6 +249,12 @@ export default function Home() {
           value={niche}
           onChange={setNiche}
           onClear={handleClearNiche}
+        />
+
+        {/* Country Selector */}
+        <CountrySelector
+          value={country}
+          onChange={setCountry}
         />
 
         {/* Action Cards */}
